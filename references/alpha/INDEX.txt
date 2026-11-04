@@ -1,0 +1,102 @@
+ALPHA REFERENCE COLLECTION
+
+Published architecture manuals, implementation background, and extension research.
+The PDFs are unchanged downloads. manifest.json records provenance, source URLs
+where known, retrieval or addition times, file sizes, page counts, SHA-256
+checksums, and verification.
+Copyright remains with the original holders; collection does not grant rights
+to manufacture an implementation.
+
+START HERE
+
+1. Read the 1996 handbook for an introduction to Alpha.
+2. Use the 2002 Architecture Reference Manual to define instruction behaviour,
+   memory ordering, privileged behaviour, and the software interface to target.
+3. Consult the compiler guide for extension detection and scheduling guidance.
+4. Read the 21264 paper/slides for microarchitecture and prediction background.
+5. Read the multimedia-extension paper for the MVI instruction groups and their
+   implementation in the 21164PC.
+6. Treat Tarantula as optional vector research, separate from baseline Alpha.
+
+ARCHITECTURE AND SOFTWARE MANUALS
+
+manuals/alpha-architecture-reference-manual-4th-edition-2002.pdf
+  Alpha Architecture Reference Manual, Fourth Edition
+  Compaq Computer Corporation, January 2002; 984 pages.
+  Primary architecture reference, including the base ISA, optional extensions,
+  memory model, privileged architecture, PALcode interfaces, and OS interfaces.
+  Its cover identifies the original public Compaq FTP download location.
+
+manuals/alpha-architecture-handbook-1996.pdf
+  Alpha Architecture Handbook, Version 3
+  Digital Equipment Corporation, October 1996; 352 pages.
+  Earlier architecture overview, instruction definitions, and memory model.
+  The preface introduces BWX, CIX, and the multimedia extension named MAX.
+  This predates the 2002 reference; consult the later reference for later changes.
+
+manuals/alpha-21264-21364-compiler-writers-guide-2002.pdf
+  Compiler Writer's Guide for the 21264/21364, Revision 2.0
+  Compaq Computer Corporation, January 2002; 79 pages; EC-0100A-TE.
+  Section 3.1: architecture extensions and AMASK feature detection.
+  Section 3.6: prefetch guidance. Also covers instruction scheduling and caches.
+
+IMPLEMENTATION BACKGROUND
+
+manuals/alpha-21264-ev6-hardware-reference-manual.pdf
+  Alpha 21264/EV6 Microprocessor Hardware Reference Manual
+  Compaq Computer Corporation; 348 pages; DS-0027B-TE.
+  The downloaded edition's cover does not state an issue date.
+  Public hardware reference describing EV6 caches, prediction, TLBs, and PALcode.
+  This describes a particular implementation rather than prescribing our design.
+
+papers/alpha-21264-microprocessor-kessler-1999.pdf
+  The Alpha 21264 Microprocessor
+  R. E. Kessler, IEEE Micro 19(2), March/April 1999, pp. 24-36; 13 PDF pages.
+  DOI: https://doi.org/10.1109/40.755465
+  Out-of-order execution, tournament branch prediction, and memory hierarchy.
+  The archived copy is scanned, so text selection/search is limited.
+
+papers/alpha-21264-hot-chips-kessler-1998.pdf
+  The Alpha 21264 Microprocessor: Out-of-Order Execution at 600 MHz
+  R. E. Kessler, Hot Chips 10, August 1998; 30 slides.
+  Public conference slides accompanying the EV6 implementation background.
+
+STANDARD-EXTENSION RESEARCH
+
+papers/mueller-multimedia-extensions.pdf
+  Multimedia Extensions for a 550-MHz RISC Microprocessor
+  David A. Carlson, Ruben W. Castelino, Robert O. Mueller.
+  IEEE Journal of Solid-State Circuits 32(11), November 1997, pp. 1618-1624;
+  7 PDF pages.
+  DOI: https://doi.org/10.1109/4.641681
+  User-provided PDF; its footer identifies IEEE Xplore as the download service.
+  Covers the 13 MVI instructions and their implementation in the 21164PC,
+  including packed min/max, pack/unpack, and pixel-error operations.
+
+VECTOR-EXTENSION RESEARCH
+
+papers/tarantula-vector-extension-alpha-isca-2002.pdf
+  Tarantula: A Vector Extension to the Alpha Architecture
+  Roger Espasa and coauthors, ISCA 2002, pp. 281-292; 12 PDF pages.
+  DOI: https://doi.org/10.1109/ISCA.2002.1003586
+  Public copy from coauthor Joel Emer's website.
+  Proposed vector architecture, vector state, gather/scatter, and cache interface.
+  Its performance claims are simulation results. It is not required for baseline
+  Alpha compatibility and should not be treated as part of the shipped scalar ISA.
+
+WHERE TO FIND THE STANDARD EXTENSIONS
+
+BWX: byte/word memory access and sign-extension instructions.
+  Start with the handbook preface and the corresponding instruction entries in
+  the 2002 Architecture Reference Manual.
+
+FIX: floating-point/register-transfer and square-root extensions.
+  Use the 2002 reference's instruction entries and AMASK description.
+
+CIX: bit-count operations CTLZ, CTTZ, and CTPOP.
+  Use the handbook preface and the 2002 reference's instruction entries.
+
+MVI / MAX: packed-data multimedia operations using integer registers.
+  MAX is the name used by the earlier handbook. Use the 2002 reference for the
+  MVI instruction definitions and the multimedia-extension paper for circuit
+  implementation background. This is separate from Tarantula's vector proposal.

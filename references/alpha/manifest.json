@@ -1,0 +1,289 @@
+{
+  "collection": "Alpha architecture references",
+  "created_utc": "2026-11-03T22:30:19.808141+00:00",
+  "documents": [
+    {
+      "id": "architecture-reference-2002",
+      "path": "manuals/alpha-architecture-reference-manual-4th-edition-2002.pdf",
+      "title": "Alpha Architecture Reference Manual, Fourth Edition",
+      "publisher": "Compaq Computer Corporation",
+      "published": "2002-01",
+      "kind": "Architecture specification",
+      "topics": [
+        "base ISA",
+        "BWX",
+        "FIX",
+        "CIX",
+        "MVI",
+        "memory model",
+        "PALcode",
+        "operating-system interfaces"
+      ],
+      "provenance": "Publicly issued Compaq manual, preserved by an archival mirror; the cover lists the original public Compaq FTP location.",
+      "notes": "Primary architecture reference. Public availability is not an implementation licence.",
+      "source_urls": [
+        "https://docs.alexrp.com/alpha/alpha_4th.pdf"
+      ],
+      "download_url": "https://docs.alexrp.com/alpha/alpha_4th.pdf",
+      "final_url": "https://docs.alexrp.com/alpha/alpha_4th.pdf",
+      "status": "downloaded",
+      "bytes": 8678542,
+      "sha256": "e69e3f4a8ae0266c0df1efca78acd73319cb92fd0c0b5a5d183e6f49d4035511",
+      "retrieved_utc": "2026-11-03T22:30:04.470255+00:00",
+      "page_count": 984,
+      "verification": "SHA-256 checked; PDF parsed with pypdf; page count and opening pages read.",
+      "pdf_title": "arm_book.book"
+    },
+    {
+      "id": "architecture-handbook-1996",
+      "path": "manuals/alpha-architecture-handbook-1996.pdf",
+      "title": "Alpha Architecture Handbook, Version 3",
+      "publisher": "Digital Equipment Corporation",
+      "published": "1996-10",
+      "kind": "Architecture specification",
+      "topics": [
+        "base ISA",
+        "BWX",
+        "CIX",
+        "MAX multimedia extension",
+        "memory model"
+      ],
+      "provenance": "Publicly issued DEC handbook preserved by a university.",
+      "notes": "Earlier handbook. Its MAX name describes the multimedia extension later discussed as MVI. Use the 2002 reference for the later architecture definition.",
+      "source_urls": [
+        "https://www2.cs.arizona.edu/projects/alto/Doc/local/alphahb2.pdf"
+      ],
+      "download_url": "https://www2.cs.arizona.edu/projects/alto/Doc/local/alphahb2.pdf",
+      "final_url": "https://www2.cs.arizona.edu/projects/alto/Doc/local/alphahb2.pdf",
+      "content_type": "application/pdf",
+      "status": "downloaded",
+      "bytes": 829544,
+      "sha256": "eb5ccfb55fd809b1e2e3aa4345c057a0480523f4bd38247ef9f5b6d32b1b7c11",
+      "retrieved_utc": "2026-11-03T22:30:06.746975+00:00",
+      "page_count": 352,
+      "verification": "SHA-256 checked; PDF parsed with pypdf; page count and opening pages read.",
+      "pdf_title": ""
+    },
+    {
+      "id": "compiler-guide-2002",
+      "path": "manuals/alpha-21264-21364-compiler-writers-guide-2002.pdf",
+      "title": "Compiler Writer's Guide for the 21264/21364, Revision 2.0",
+      "publisher": "Compaq Computer Corporation",
+      "published": "2002-01",
+      "kind": "Compiler and optimisation guide",
+      "topics": [
+        "architecture extensions",
+        "AMASK",
+        "instruction scheduling",
+        "prefetch",
+        "implementation behaviour"
+      ],
+      "provenance": "Publicly issued Compaq manual preserved by Open Watcom; the cover lists a public Compaq FTP location.",
+      "notes": "Section 3.1 covers extension detection; Section 3.6 covers prefetch. Performance guidance describes particular implementations.",
+      "source_urls": [
+        "https://openwatcom.org/ftp/devel/docs/comp_guide_v2.pdf"
+      ],
+      "download_url": "https://openwatcom.org/ftp/devel/docs/comp_guide_v2.pdf",
+      "final_url": "https://openwatcom.org/ftp/devel/docs/comp_guide_v2.pdf",
+      "content_type": "application/pdf",
+      "status": "downloaded",
+      "bytes": 674065,
+      "sha256": "f58e25a52948888bdab6bd9e1e46e252eb98fd1dafde861e572f784cd6312f23",
+      "retrieved_utc": "2026-11-03T22:30:15.452542+00:00",
+      "page_count": 79,
+      "verification": "SHA-256 checked; PDF parsed with pypdf; page count and opening pages read.",
+      "pdf_title": "ev6compile.book"
+    },
+    {
+      "id": "ev6-hardware-reference",
+      "path": "manuals/alpha-21264-ev6-hardware-reference-manual.pdf",
+      "title": "Alpha 21264/EV6 Microprocessor Hardware Reference Manual",
+      "publisher": "Compaq Computer Corporation",
+      "published": null,
+      "kind": "Hardware reference manual",
+      "topics": [
+        "EV6 microarchitecture",
+        "branch prediction",
+        "caches",
+        "TLBs",
+        "PALcode",
+        "BWX",
+        "FIX",
+        "MVI"
+      ],
+      "provenance": "Publicly issued Compaq hardware manual preserved by Open Watcom.",
+      "notes": "Implementation background for EV6, not a requirement to reproduce DEC's circuitry.",
+      "source_urls": [
+        "https://openwatcom.org/ftp/devel/docs/21264ev6_hrm.pdf"
+      ],
+      "download_url": "https://openwatcom.org/ftp/devel/docs/21264ev6_hrm.pdf",
+      "final_url": "https://openwatcom.org/ftp/devel/docs/21264ev6_hrm.pdf",
+      "content_type": "application/pdf",
+      "status": "downloaded",
+      "bytes": 4188149,
+      "sha256": "14dedf7c977655bf3f72faf03fce7e5eb212503b26ac468258aa267d5d282e70",
+      "retrieved_utc": "2026-11-03T22:30:14.800976+00:00",
+      "page_count": 348,
+      "verification": "SHA-256 checked; PDF parsed with pypdf; page count and opening pages read.",
+      "pdf_title": "Untitled Document",
+      "edition": "DS-0027B-TE",
+      "publication_date_note": "The downloaded edition has no issue date on its cover; its PDF creation date is nonstandard and has not been used as a publication date."
+    },
+    {
+      "id": "ev6-paper-1999",
+      "path": "papers/alpha-21264-microprocessor-kessler-1999.pdf",
+      "title": "The Alpha 21264 Microprocessor",
+      "authors": [
+        "R. E. Kessler"
+      ],
+      "publisher": "IEEE Micro",
+      "published": "1999-03/04",
+      "kind": "Published research paper",
+      "topics": [
+        "out-of-order execution",
+        "tournament branch prediction",
+        "cache hierarchy",
+        "memory bandwidth"
+      ],
+      "doi": "10.1109/40.755465",
+      "provenance": "Published IEEE paper preserved on a university course website.",
+      "notes": "Background on the processor and predictor discussed in our conversation; this is not an ISA-extension specification.",
+      "source_urls": [
+        "https://cseweb.ucsd.edu/classes/sp00/cse241/alpha.pdf"
+      ],
+      "status": "downloaded",
+      "download_url": "https://cseweb.ucsd.edu/classes/sp00/cse241/alpha.pdf",
+      "final_url": "https://cseweb.ucsd.edu/classes/sp00/cse241/alpha.pdf",
+      "content_type": "application/pdf",
+      "bytes": 1774163,
+      "sha256": "d95b1e5896f252690ffc231099aeda798de8909bf05f972b3bf3d2e1274e89cc",
+      "retrieved_utc": "2026-11-03T22:32:03.937586+00:00",
+      "prior_attempt_errors": [
+        "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)>"
+      ],
+      "page_count": 13,
+      "verification": "SHA-256 checked; PDF parsed with pypdf; page count and opening pages read.",
+      "pdf_title": "The Alpha 21264 microprocessor - IEEE Micro ",
+      "format_note": "Scanned paper; opening pages have no extractable text.",
+      "pdf_parse_note": "Legacy cross-reference numbering was normalized in memory by the PDF reader. Downloaded bytes are unchanged."
+    },
+    {
+      "id": "ev6-hotchips-1998",
+      "path": "papers/alpha-21264-hot-chips-kessler-1998.pdf",
+      "title": "The Alpha 21264 Microprocessor: Out-of-Order Execution at 600 MHz",
+      "authors": [
+        "R. E. Kessler"
+      ],
+      "publisher": "Hot Chips 10 / Compaq",
+      "published": "1998-08",
+      "kind": "Public conference slides",
+      "topics": [
+        "EV6 overview",
+        "tournament branch prediction",
+        "out-of-order execution"
+      ],
+      "provenance": "Public Hot Chips conference archive.",
+      "notes": "A compact visual companion to the 1999 paper.",
+      "source_urls": [
+        "https://old.hotchips.org/wp-content/uploads/hc_archives/hc10/2_Mon/HC10.S1/HC10.1.1.pdf"
+      ],
+      "download_url": "https://old.hotchips.org/wp-content/uploads/hc_archives/hc10/2_Mon/HC10.S1/HC10.1.1.pdf",
+      "final_url": "https://old.hotchips.org/wp-content/uploads/hc_archives/hc10/2_Mon/HC10.S1/HC10.1.1.pdf",
+      "content_type": "application/pdf",
+      "status": "downloaded",
+      "bytes": 784796,
+      "sha256": "6199ef01044cb8cee7c79b7486cb3f087d046d438421dfa1e1defd9972dc45c6",
+      "retrieved_utc": "2026-11-03T22:30:14.912780+00:00",
+      "page_count": 30,
+      "verification": "SHA-256 checked; PDF parsed with pypdf; page count and opening pages read.",
+      "pdf_title": ""
+    },
+    {
+      "id": "mvi-paper-1997",
+      "path": "papers/mueller-multimedia-extensions.pdf",
+      "title": "Multimedia Extensions for a 550-MHz RISC Microprocessor",
+      "authors": [
+        "David A. Carlson",
+        "Ruben W. Castelino",
+        "Robert O. Mueller"
+      ],
+      "publisher": "IEEE Journal of Solid-State Circuits",
+      "volume": 32,
+      "issue": 11,
+      "pages": "1618-1624",
+      "published": "1997-11",
+      "kind": "Published research paper",
+      "topics": [
+        "MVI",
+        "21164PC",
+        "packed min/max",
+        "pack/unpack",
+        "pixel-error instruction",
+        "circuit implementation"
+      ],
+      "doi": "10.1109/4.641681",
+      "bibliographic_url": "https://doi.org/10.1109/4.641681",
+      "source_service": "IEEE Xplore",
+      "source_urls": [],
+      "provenance": "User-provided PDF found in the collection; its footer identifies IEEE Xplore as the download service. The exact download URL was not supplied.",
+      "provided_by": "user",
+      "status": "user-provided",
+      "content_type": "application/pdf",
+      "bytes": 160731,
+      "sha256": "c038c236b8b4a66ffb9201479b6c2a275aec81bbc6db1cf5300b0e0addede1e1",
+      "page_count": 7,
+      "added_utc": "2026-11-03T22:57:16.913318+00:00",
+      "verified_utc": "2026-11-03T22:57:16.913318+00:00",
+      "verification": "SHA-256 checked; PDF parsed with pypdf; all seven pages read; title, authors, issue date, and final journal page checked.",
+      "pdf_title": "Multimedia Extensions for a 550-MHz RISC Microprocessor - Solid-State Circuits, IEEE Journal of",
+      "notes": "Describes the 13 MVI instructions and their implementation in the Alpha 21164PC. Original user-provided filename and PDF bytes retained."
+    },
+    {
+      "id": "tarantula-paper-2002",
+      "path": "papers/tarantula-vector-extension-alpha-isca-2002.pdf",
+      "title": "Tarantula: A Vector Extension to the Alpha Architecture",
+      "authors": [
+        "Roger Espasa",
+        "Federico Ardanaz",
+        "Joel Emer",
+        "Stephen Felix",
+        "Julio Gago",
+        "Roger Gramunt",
+        "Isaac Hernandez",
+        "Toni Juan",
+        "Geoff Lowney",
+        "Matthew Mattina",
+        "Andre Seznec"
+      ],
+      "publisher": "ISCA 2002 / IEEE",
+      "published": "2002",
+      "kind": "Published research proposal",
+      "topics": [
+        "vector ISA extension",
+        "EV8",
+        "gather/scatter",
+        "vector memory system"
+      ],
+      "doi": "10.1109/ISCA.2002.1003586",
+      "provenance": "Public copy hosted on coauthor Joel Emer's website.",
+      "notes": "Proposed research extension; not a baseline Alpha compatibility requirement. Performance results are simulation results.",
+      "source_urls": [
+        "https://emer.org/Family/Joel/Professional/papers/2002-isca-tarantula.pdf"
+      ],
+      "download_url": "https://emer.org/Family/Joel/Professional/papers/2002-isca-tarantula.pdf",
+      "final_url": "https://emer.org/Family/Joel/Professional/papers/2002-isca-tarantula.pdf",
+      "content_type": "application/pdf",
+      "status": "downloaded",
+      "bytes": 1194398,
+      "sha256": "885c319b8cd09480604e5bcf060fc61a679edfa7b49d0d289d5d3995aa6d5c17",
+      "retrieved_utc": "2026-11-03T22:30:19.807542+00:00",
+      "page_count": 12,
+      "verification": "SHA-256 checked; PDF parsed with pypdf; page count and opening pages read.",
+      "pdf_title": "",
+      "pdf_parse_note": "Legacy cross-reference numbering was normalized in memory by the PDF reader. Downloaded bytes are unchanged."
+    }
+  ],
+  "related_not_downloaded": [],
+  "validated_utc": "2026-11-03T22:57:16.913318+00:00",
+  "updated_utc": "2026-11-03T22:57:16.913318+00:00"
+}
