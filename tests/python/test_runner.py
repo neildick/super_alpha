@@ -1,12 +1,15 @@
 """Check result handling without substituting a solution for the learner RTL."""
 
 import argparse
+from contextlib import redirect_stderr, redirect_stdout
+import io
 from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
-from sim.runner import RunError, parse_report, positive_seed, positive_timeout, run_command
+from sim.runner import EXERCISES, RunError, main, parse_report, positive_seed, positive_timeout, run_command
 
 
 class ReportTests(unittest.TestCase):
@@ -93,6 +96,29 @@ class CommandTests(unittest.TestCase):
             cwd = Path(folder)
             with self.assertRaises(RunError):
                 run_command([sys.executable, "-c", "import time; time.sleep(10)"], cwd, cwd / "run.log", 0.05)
+
+
+class ExerciseSelectionTests(unittest.TestCase):
+    def test_lists_both_exercises(self):
+        output = io.StringIO()
+        with redirect_stdout(output):
+            self.assertEqual(main(["list"]), 0)
+        self.assertIn("regfile: Exercise 01", output.getvalue())
+        self.assertIn("decode: Exercise 02", output.getvalue())
+
+    def test_each_exercise_selects_its_own_test_names(self):
+        for block, exercise in EXERCISES.items():
+            with self.subTest(block=block), patch("sim.runner.run_exercise", return_value=1) as execute:
+                self.assertEqual(main(["run", block, "--test", exercise.cases[0]]), 1)
+                self.assertEqual(execute.call_args.args[0].block, block)
+                self.assertEqual(execute.call_args.args[0].test, exercise.cases[0])
+
+    def test_rejects_test_from_another_exercise_before_running_tools(self):
+        with patch("sim.runner.run_exercise") as execute, redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit) as error:
+                main(["run", "decode", "--test", "zero_reads"])
+        self.assertEqual(error.exception.code, 2)
+        execute.assert_not_called()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,9 @@
+mnemonic,major_opcode_hex,function_hex,format,source,scope,rtl_status,reference_status,test_groups
+LDA,08,,memory,Alpha Architecture Handbook 3.3.1 and 4.2.1,decode lesson only,exercise_stub,semantic vectors ready,memory_formats;register_roles;no_stale_controls;random_formats
+LDAH,09,,memory,Alpha Architecture Handbook 3.3.1 and 4.2.1,decode lesson only,exercise_stub,semantic vectors ready,memory_formats;no_stale_controls;random_formats
+LDQ,29,,memory,Alpha Architecture Handbook 3.3.1 and 4.2,decode lesson only,exercise_stub,semantic vectors ready,memory_formats;register_roles;no_stale_controls;random_formats
+STQ,2D,,memory,Alpha Architecture Handbook 3.3.1 and 4.2,decode lesson only,exercise_stub,semantic vectors ready,memory_formats;register_roles;no_stale_controls;random_formats
+ADDQ,10,20,operate register or literal,Alpha Architecture Handbook 3.3.3 and 4.4.3,decode lesson only,exercise_stub,semantic vectors ready,operate_registers;operate_literals;register_roles;unsupported;no_stale_controls;random_formats
+BIS,11,20,operate register or literal,Alpha Architecture Handbook 3.3.3 and 4.5,decode lesson only,exercise_stub,semantic vectors ready,operate_registers;operate_literals;register_roles;unsupported;no_stale_controls;random_formats
+BR,30,,branch,Alpha Architecture Handbook 3.3.2 and 4.3,decode lesson only,exercise_stub,semantic vectors ready,branch_offsets;register_roles;no_stale_controls;random_formats
+BNE,3D,,branch,Alpha Architecture Handbook 3.3.2 and 4.3.1,decode lesson only,exercise_stub,semantic vectors ready,branch_offsets;register_roles;no_stale_controls;random_formats

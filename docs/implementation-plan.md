@@ -5,9 +5,19 @@ in simulation, and then run the same programs on an FPGA. The initial core uses
 one instruction at a time so that instruction semantics, memory transactions, and
 architectural state can be established before performance features are added.
 
-The long-term destination remains a multicore Alpha machine and a Haiku port.
+The long-term destination is a multicore Alpha machine running Linux, with a
+later Haiku port. Use one hardware thread per core; SMT is excluded. Keep the
+default microarchitecture conservative and avoid speculative execution.
 The first deliverable is a restricted integer bring-up subset; its instruction
 support will be recorded explicitly as it grows.
+
+Follow [Next steps for a modern Alpha core](next-steps.md) for the immediate work
+order, concrete handoffs, and performance priorities. The stages below define
+coverage and contracts; complete their required subsets incrementally.
+The [research direction](architecture-direction.md) separates Alpha userspace
+compatibility from a modern supervisor/platform design and maps the Linux changes.
+The [desktop priorities](desktop-priorities.md) define the eventual user experience,
+software feasibility checks, and experiments for latency, memory, graphics, and idle.
 
 ## Learning workflow
 
@@ -18,8 +28,10 @@ owner takes the block from fail to pass. Review and debugging start with hints;
 complete RTL solutions require an explicit request.
 
 The first exercise is the [integer register file](exercises/01-register-file.md).
-Subsequent exercises follow the block dependencies below: decoder, basic integer
-execution, branches, byte operations, memory channels, and the load/store unit.
+The current lesson is the [instruction decoder](exercises/02-instruction-decoder.md).
+Subsequent exercises follow the block dependencies below: basic integer execution,
+branches, memory channels, a minimal executing core, and the load/store unit.
+Broader arithmetic and byte operations follow that first working core.
 The assistant can implement the simulator infrastructure and independent models
 without completing the learner's blocks.
 
@@ -34,19 +46,21 @@ FPGA target and is not an alternative simulator for these lessons.
 | Simulation | Verilator inside WSL, SystemVerilog unit testbenches, and a Python runner; add a C++ core harness when needed |
 | Independent reference | A Python instruction model written from the published architecture |
 | Execution | Single core, in order, multicycle, one instruction in flight |
+| Eventual parallelism | SMP using physical cores, one hardware thread per core; no SMT |
+| Speculation policy | No speculative execution by default; research additions need measured benefit and analysis of observable effects |
 | Integer state | 32 architectural 64-bit integer registers, including R31, and a 64-bit PC |
 | Instruction format | Alpha 32-bit instructions |
 | Byte order | Little endian |
 | Initial software | Statically linked freestanding integer C and assembly using nontrapping arithmetic forms |
-| Compiler starting point | An EV56 instruction target with BWX and floating-point register use disabled |
+| Compiler starting point | EV56 with BWX enabled once verified; floating-point register use disabled |
 | Addressing | A defined physical address map; address translation follows later |
 | Memory | Separate instruction and data request/response ports with ideal backing storage |
 | Timing | One clock domain; synchronous reset at the portable core boundary |
 | Initial memory ordering | Complete each instruction's memory transaction before advancing |
 
 BWX provides byte and word access. Floating-point execution, privileged execution,
-PALcode, translation, cache coherence, and the other extensions have their own
-later milestones. The initial subset is sufficient only for programs built to
+supervisor services, translation, cache coherence, and the other extensions have
+their own later milestones. The initial subset is sufficient only for programs built to
 its recorded restrictions. In particular, disabling floating-point register use
 creates a restricted software environment; it does not establish full EV56 or
 standard Alpha ABI compatibility.
@@ -172,16 +186,20 @@ their completion and exception semantics before enabling them, including the
 corresponding trace representation. See the handbook's
 [quadword add definition](../references/alpha/manuals/alpha-architecture-handbook-1996.pdf#page=86).
 
-This initial fault sink is a development interface. Implement architectural
-exception entry and PALcode separately before claiming privileged compatibility.
+This initial fault sink is a development interface. Implement the selected
+exception/supervisor contract before OS integration. Historical PAL compatibility
+is a separate choice, not a requirement for the new core.
 Distinguish invalid encodings from valid instructions outside the implemented
 subset. Program success comes from a test completion device or an expected
 execution trace; an unsupported instruction is not a successful program exit.
 
 ## Implementation stages
 
-Complete the pass condition for each stage before depending on it in a larger
+Complete the relevant block's pass condition before depending on it in a larger
 block. Add one instruction family or functional block per reviewable change.
+Use the next-steps queue to integrate the first six non-memory instructions, then
+LDQ/STQ, before completing the broader stage 2 and 3 instruction families. A
+partial slice passing does not mark the whole stage complete.
 
 ### Stage 0 Define the subset and test harness
 
@@ -248,7 +266,8 @@ inventory identifies remaining arithmetic forms explicitly.
 
 First test the memory-channel model with a small request driver. Then test
 `alpha_lsu` against it without a CPU attached. Implement effective-address
-calculation, lane selection, byte enables, data placement, and result extension.
+handling using the execution unit's computed address, alignment checks, lane
+selection, byte enables, data placement, and result extension.
 
 Cover ordinary longword and quadword loads/stores, BWX byte/word loads/stores,
 and the Alpha `LDQ_U`/`STQ_U` alignment rules. Follow the instruction definitions;
@@ -309,9 +328,10 @@ segments, checks address ranges, and initializes their zero-fill regions.
 Establish the stack, procedure/global-pointer conventions, initialized data,
 and BSS. Keep program loading and reset sequencing reproducible.
 
-Start compiler experiments with `-mcpu=ev56 -mno-fp-regs` and explicitly disable
-unimplemented optional extensions. Apply consistent flags to all startup and
-runtime objects. Audit disassembly and unresolved helper symbols for each test
+After BWX is verified, start compiler experiments with
+`-mcpu=ev56 -mbwx -mno-fp-regs -mno-cix -mno-fix -mno-max`.
+Apply consistent flags to all startup and runtime objects. Audit disassembly and
+unresolved helper symbols for each test
 program. `-mno-fp-regs` implies software floating point and changes floating-point
 argument conventions; use integer-only programs at this stage. `-msoft-float`
 alone does not ensure supplied runtime libraries avoid hardware floating point.
@@ -359,14 +379,16 @@ they are developed.
 | --- | --- |
 | Caches | Build one small blocking cache first, using ideal synchronous tag/data arrays. Test hits, misses, refill, byte writes, eviction, reset, faults, and MMIO bypass against an uncached memory oracle. Choose and document write policy and line size before coding. Apply the design to instruction/data paths incrementally. |
 | SRAM adapters | Specify array ports, latency, byte masks, read-during-write behaviour, and initialization. Run the same storage tests against ideal, FPGA, and eventual ASIC implementations. Reset valid/control state rather than requiring large data arrays to clear. |
-| Privileged architecture | Replace the bring-up fault sink with specified Alpha exception entry, PALmode mechanisms, and independently written PALcode. Add architectural state and test exception/return sequences one mechanism at a time. Enable arithmetic-trapping forms only with their defined completion, result, and trap behaviour. |
-| Address translation | Test TLB lookup and permissions independently, then misses, invalidation, and fault delivery through the selected PALcode interface. Define the OS-facing page-table/TLB contract before an OS port. |
+| Privileged architecture | Compare a small native supervisor interface with a narrow PAL compatibility layer using the research direction, then prototype the chosen Linux integration. Define state, trap/return semantics, and privileged encodings before RTL. Preserve specified arithmetic result/trap behaviour. |
+| Address translation | Test TLB lookup and permissions independently, then refill, invalidation, and fault delivery through the chosen supervisor interface. Initially retain Linux/Alpha page tables; compare software refill with a hardware walker after establishing a baseline. |
 | Floating point | Add floating-point registers and individual operations with an independent numerical oracle. Test rounding, conversions, exceptional values, and Alpha exception behaviour before enabling an ABI or extension that requires them. |
 | Atomics and ordering | Implement load-locked/store-conditional and barriers with explicit reservation state. Test success, forced failure, conflicting writes, and ordering. Extend these tests to shared memory before adding a second core. |
-| Pipeline | Introduce stage registers, stalls, forwarding, and flushes incrementally. Preserve precise faults and prevent younger stores from escaping before commit. Reuse architectural traces and add dependency/flush tests. |
-| Branch prediction | Start with a small predictor tested independently. Verify that predictions change timing while preserving retirement results, and that redirected or faulted paths have no architectural effects. |
-| Multicore | Begin with two cores and a documented coherence/interconnect protocol. Test shared data, reservations, barriers, interrupts, and progress under contention before increasing core count. |
-| Haiku | Define the Alpha ABI, firmware/boot contract, interrupts/timers, MMU behaviour, and required instruction coverage as an OS-port milestone. Track kernel, compiler/runtime, and driver work alongside hardware. |
+| Pipeline | Introduce a short single-issue pipeline with stalls and forwarding. Interlock unresolved control flow and older faults; gate memory accesses on permissions. Preserve the retirement trace and test forbidden requests at cache/memory interfaces. |
+| Speculation | Deferred from the default design. Research prediction or speculative loads only with performance evidence and analysis of observable microarchitectural effects; retirement correctness alone is insufficient. |
+| Linux on one core | Pin kernel/toolchain/rootfs, preserve the selected Alpha userspace ABI, and document native supervisor/boot departures with specific kernel patches. Cover MMU, interrupts, atomics, and required floating-point support. Pass initramfs shell, process switching, faults, and isolation tests. |
+| SMP | Begin with two physical cores and private data caches disabled. Verify shared-memory ordering and reservations, then coherent private caches, secondary startup, IPIs, and TLB shootdowns. Boot SMP Linux and test shared mappings and scheduling before adding cores. No SMT. |
+| Haiku | Port after the Linux platform contracts are established. Track kernel, compiler/runtime, and driver work alongside hardware. |
+| Desktop experience | Prove the selected application/toolchain and rendering path, then test foreground latency, frame/audio deadlines, memory/I/O contention, and idle/wakeup using the desktop priorities. Linux boot alone does not establish desktop readiness. |
 
 ## Verification policy
 
@@ -410,7 +432,10 @@ AGENTS.md
 docs/
   implementation-plan.md
   exercises/                 # One lesson per block or instruction family
-  isa-support.csv            # Add in stage 0
+  next-steps.md               # Immediate execution order and modern priorities
+  architecture-direction.md  # Research tradeoffs and Linux patch map
+  desktop-priorities.md       # Experience budgets and platform experiments
+  isa-support.csv             # Current decoder subset; expand with execution
   interfaces.md              # Add in stage 0
 rtl/
   core/                      # Portable CPU and functional units
@@ -443,13 +468,13 @@ entry point lists exercises and runs a selected block or named test. Add lint,
 ISA/program tests, and the full regression as those components arrive. Add board
 build targets separately.
 
-## First implementation slice
+## Current implementation slice
 
-Prepare the stage 0 harness and the stage 1 register-file exercise first. The
-owner then implements the register file against the supplied tests, producing
-an independently checked stateful block before a CPU controller exists. Add the
-decoder and the smallest address/integer operation exercises next; integrate only
-after their unit tests pass.
+Preserve the completed register file and finish the active decoder exercise.
+Then follow [the next-steps queue](next-steps.md): small ALU and branch blocks,
+tested memory infrastructure, a six-instruction core, and standalone LDQ/STQ
+support before expanding toward freestanding C. Prepare one lesson at a time;
+the owner continues to implement the functional RTL.
 
 Keep the initial source of architectural behaviour in the published manuals listed
 in the [reference index](../references/alpha/INDEX.txt). The 21264 and MVI papers

@@ -13,8 +13,10 @@ import signal
 import subprocess
 import sys
 
+from .reference.decode_vectors import DECODE_CASES, write_vectors
+
 ROOT = Path(__file__).resolve().parent.parent
-CASES = (
+REGFILE_CASES = (
     "zero_reads",
     "write_and_read",
     "write_enable",
@@ -23,11 +25,31 @@ CASES = (
     "zero_writes",
     "random_scoreboard",
 )
-TOP = "tb_alpha_regfile"
-SOURCES = (
-    ROOT / "rtl/core/alpha_regfile.sv",
-    ROOT / "tests/unit/tb_alpha_regfile.sv",
-)
+
+
+@dataclass(frozen=True)
+class Exercise:
+    title: str
+    top: str
+    sources: tuple[Path, ...]
+    cases: tuple[str, ...]
+
+
+EXERCISES = {
+    "regfile": Exercise(
+        "Exercise 01, integer register file",
+        "tb_alpha_regfile",
+        (ROOT / "rtl/core/alpha_regfile.sv", ROOT / "tests/unit/tb_alpha_regfile.sv"),
+        REGFILE_CASES,
+    ),
+    "decode": Exercise(
+        "Exercise 02, instruction decoder",
+        "tb_alpha_decode",
+        (ROOT / "rtl/core/alpha_decode_pkg.sv", ROOT / "rtl/core/alpha_decode.sv",
+         ROOT / "tests/unit/tb_alpha_decode.sv"),
+        DECODE_CASES,
+    ),
+}
 
 
 class RunError(Exception):
@@ -128,11 +150,12 @@ def positive_timeout(text: str) -> float:
 
 def run_exercise(args: argparse.Namespace) -> int:
     if os.name == "nt":
-        raise RunError("Run inside WSL: cd to this workspace and use python3 -m sim run regfile.")
+        raise RunError(f"Run inside WSL: cd to this workspace and use python3 -m sim run {args.block}.")
     missing = [name for name in ("verilator", "g++", "make") if shutil.which(name) is None]
     if missing:
         raise RunError("Missing tools on the WSL/Linux PATH: " + ", ".join(missing))
-    build = ROOT / "build/regfile"
+    exercise = EXERCISES[args.block]
+    build = ROOT / "build" / args.block
     objects = build / "obj"
     build.mkdir(parents=True, exist_ok=True)
     versions = [f"Python: {sys.version.split()[0]}"]
@@ -143,19 +166,24 @@ def run_exercise(args: argparse.Namespace) -> int:
             raise RunError(f"{tool} did not report its version.")
         versions.append(lines[0])
     (build / "versions.txt").write_text("\n".join(versions) + "\n", encoding="utf-8")
+    vector_counts = write_vectors(build / "vectors", args.seed) if args.block == "decode" else None
     command = [
         "verilator", "--binary", "--timing", "--assert", "--trace-vcd",
-        "--top-module", TOP, "--Mdir", str(objects), "--build-jobs", "2",
-        *(str(source) for source in SOURCES),
+        "--top-module", exercise.top, "--Mdir", str(objects), "--build-jobs", "2",
+        *(str(source) for source in exercise.sources),
     ]
-    print("Building regfile with Verilator...", flush=True)
+    print(f"Building {args.block} with Verilator...", flush=True)
     run_command(command, build, build / "build.log", 300)
-    command = [str(objects / f"V{TOP}"), f"+TEST={args.test}", f"+SEED={args.seed}"]
+    command = [str(objects / f"V{exercise.top}"), f"+TEST={args.test}", f"+SEED={args.seed}"]
     if args.waves:
         command.append("+WAVES")
     output = run_command(command, build, build / "run.log", args.timeout)
-    expected_cases = CASES if args.test == "all" else (args.test,)
+    expected_cases = exercise.cases if args.test == "all" else (args.test,)
     results = parse_report(output, expected_cases, args.seed)
+    if vector_counts is not None:
+        for result in results:
+            if result.checks != vector_counts[result.name] * 10:
+                raise RunError(f"Incomplete vector checks for {result.name}.")
     for line in output.splitlines():
         if line.startswith("SA_CHECK "):
             print(line.removeprefix("SA_CHECK "))
@@ -173,19 +201,22 @@ def run_exercise(args: argparse.Namespace) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("list", help="List the active exercise and its tests.")
+    commands.add_parser("list", help="List the available exercises and their tests.")
     run = commands.add_parser("run", help="Build the learner RTL and run real behavioural checks.")
-    run.add_argument("block", choices=("regfile",))
-    run.add_argument("--test", choices=("all", *CASES), default="all")
+    run.add_argument("block", choices=tuple(EXERCISES))
+    run.add_argument("--test", default="all", help="A named test from 'python3 -m sim list', or all.")
     run.add_argument("--seed", type=positive_seed, default=12345)
     run.add_argument("--waves", action="store_true")
     run.add_argument("--timeout", type=positive_timeout, default=30, help="Simulation wall-time limit in seconds.")
     args = parser.parse_args(argv)
     if args.command == "list":
-        print("regfile: Exercise 01, integer register file")
-        for name in CASES:
-            print(f"  {name}")
+        for block, exercise in EXERCISES.items():
+            print(f"{block}: {exercise.title}")
+            for name in exercise.cases:
+                print(f"  {name}")
         return 0
+    if args.test != "all" and args.test not in EXERCISES[args.block].cases:
+        parser.error(f"Unknown {args.block} test {args.test!r}; use 'python3 -m sim list'.")
     try:
         return run_exercise(args)
     except RunError as error:

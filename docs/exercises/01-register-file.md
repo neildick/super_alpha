@@ -1,8 +1,8 @@
 # Exercise 01 Integer register file
 
 Implement the storage and read/write behaviour in
-[`alpha_regfile.sv`](../../rtl/core/alpha_regfile.sv). The module currently drives
-both outputs to zero so that the starter compiles while useful tests fail.
+[`alpha_regfile.sv`](../../rtl/core/alpha_regfile.sv). The original starter drove
+both outputs to zero so that it compiled while useful tests failed.
 
 A register file is the CPU's small collection of working values. In this exercise
 it has two read ports and one write port. You will learn the distinction between
